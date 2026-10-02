@@ -1,0 +1,1291 @@
+/* ==============================================================================
+   Escribe si puedes — Hoja de estilos
+   Concepto: una máquina de escribir real. El carro arriba, el papel saliendo
+   de en medio, las teclas abajo. Papel envejecido, tinta, latón y cinta roja.
+   ============================================================================== */
+
+:root {
+  /* Papel */
+  --paper: #ecdfc0;
+  --paper-edge: #d9c898;
+  --paper-shadow: #b9a877;
+  --paper-line: rgba(80, 60, 30, 0.14);
+  --paper-margin: rgba(150, 40, 40, 0.35);
+  --hole-shadow: rgba(40, 30, 15, 0.4);
+
+  /* Tinta / texto */
+  --ink: #2b2016;
+  --ink-soft: #5b4a38;
+  --ink-faint: #8a7860;
+
+  /* Cuerpo de la máquina */
+  --machine: #221f1b;
+  --machine-light: #322d26;
+  --machine-shadow: #16130f;
+
+  /* Latón */
+  --brass: #b6873b;
+  --brass-light: #e0be7c;
+  --brass-dark: #7d5a26;
+
+  /* Cinta de tinta */
+  --ribbon-black: #201c18;
+  --ribbon-red: #7c2020;
+  --ribbon-red-bright: #b23a34;
+
+  /* Estados */
+  --success: #4a6b45;
+  --success-light: #7ea377;
+  /* Colores que cambian con el tema */
+  --bg-from: #3a2c1f;
+  --bg-to: #241a10;
+  --panel-a: #2c2822;
+  --panel-b: #1a1712;
+  --key-a: #3a352c;
+  --key-b: #17140f;
+  --track: #100e0b;
+  --radius-card: 10px;
+  --trans: 0.2s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    repeating-linear-gradient(115deg, rgba(0, 0, 0, 0.05) 0px, rgba(0, 0, 0, 0.05) 1px, transparent 1px, transparent 5px),
+    linear-gradient(160deg, var(--bg-from) 0%, var(--bg-to) 100%);
+  color: var(--ink);
+  font-family: 'Work Sans', sans-serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ==============================================================================
+   Capa de peligro por inactividad — la página se va tiñendo de tinta roja
+   ============================================================================== */
+.danger-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 500;
+  opacity: 0;
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(124, 32, 32, 0.85) 100%);
+  transition: opacity 0.15s linear;
+}
+
+.danger-overlay.critical {
+  animation: inkPulse 0.7s infinite alternate;
+}
+
+@keyframes inkPulse {
+  from {
+    opacity: 0.7;
+  }
+
+  to {
+    opacity: 0.97;
+  }
+}
+
+/* ==============================================================================
+   Estructura general
+   ============================================================================== */
+.app-container {
+  max-width: 780px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 2.5rem 1.25rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==============================================================================
+   Carro superior de la máquina
+   ============================================================================== */
+.carriage-bar {
+  background:
+    linear-gradient(180deg, var(--machine-light) 0%, var(--machine) 60%, var(--machine-shadow) 100%);
+  border: 1px solid var(--machine-shadow);
+  border-bottom: none;
+  border-radius: 14px 14px 0 0;
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 6px 14px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 3;
+}
+
+.machine-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Special Elite', serif;
+  font-size: 1.3rem;
+  color: var(--brass-light);
+  background: radial-gradient(circle at 35% 30%, var(--brass) 0%, var(--brass-dark) 70%);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.35), inset 0 -2px 4px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+}
+
+.brand-title {
+  font-family: 'Special Elite', serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--paper);
+  letter-spacing: 0.01em;
+}
+
+.brand-subtitle {
+  display: block;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.72rem;
+  color: var(--brass-light);
+  margin-top: 0.15rem;
+}
+
+.carriage-center {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+/* Esferas de latón: Pomodoro y Nivel */
+.pomodoro-card,
+.level-pill {
+  background: linear-gradient(180deg, var(--panel-a), var(--panel-b));
+  border: 1px solid var(--brass-dark);
+  border-radius: 10px;
+  padding: 0.4rem 0.9rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.pomodoro-card {
+  text-align: center;
+  min-width: 108px;
+}
+
+.pomo-label {
+  display: block;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.62rem;
+  color: var(--brass-light);
+  text-transform: lowercase;
+}
+
+.pomo-timer {
+  font-family: 'Courier Prime', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--paper);
+  letter-spacing: 0.05em;
+}
+
+.level-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.82rem;
+  color: var(--paper);
+}
+
+.level-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brass-light);
+  box-shadow: 0 0 6px var(--brass-light);
+  flex-shrink: 0;
+}
+
+.btn-change-level {
+  background: transparent;
+  border: none;
+  color: var(--brass-light);
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 0.15rem;
+  transition: transform var(--trans);
+}
+
+.btn-change-level:hover {
+  transform: rotate(50deg);
+}
+
+.carriage-stats {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.stat-box {
+  background: linear-gradient(180deg, var(--panel-a), var(--panel-b));
+  border: 1px solid var(--brass-dark);
+  border-radius: 10px;
+  padding: 0.35rem 0.8rem;
+  text-align: center;
+  min-width: 74px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.stat-number {
+  display: block;
+  font-family: 'Courier Prime', monospace;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--paper);
+}
+
+.stat-label {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.6rem;
+  color: var(--brass-light);
+}
+
+/* ==============================================================================
+   Carrete de cinta (medidor de inactividad)
+   ============================================================================== */
+.ribbon-gauge {
+  background: linear-gradient(180deg, var(--machine) 0%, var(--machine-shadow) 100%);
+  border: 1px solid var(--machine-shadow);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.7rem 1.6rem;
+  position: relative;
+  z-index: 2;
+}
+
+.ribbon-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.78rem;
+  color: var(--brass-light);
+}
+
+.ribbon-title strong {
+  color: var(--paper);
+}
+
+.ai-badge {
+  font-family: 'Special Elite', serif;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+  transform: rotate(-2deg);
+  display: inline-block;
+}
+
+.ai-ok {
+  color: var(--success-light);
+}
+
+.ai-warn {
+  color: var(--ribbon-red-bright);
+}
+
+/* La cinta en sí: dos carretes con una tira entre ellos */
+.meter-track {
+  position: relative;
+  height: 14px;
+  background: var(--track);
+  border-radius: 7px;
+  margin: 0 20px;
+  overflow: visible;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.meter-track::before,
+.meter-track::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: radial-gradient(circle at 35% 30%, var(--brass-light), var(--brass-dark) 75%);
+  box-shadow: inset 0 0 0 3px var(--machine-shadow), 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.meter-track::before {
+  left: -19px;
+}
+
+.meter-track::after {
+  right: -19px;
+}
+
+.meter-bar {
+  height: 100%;
+  border-radius: 7px;
+  background: linear-gradient(90deg, var(--brass-dark), var(--brass-light));
+  box-shadow: 0 0 10px rgba(224, 190, 124, 0.55);
+  transition: width 0.1s linear, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.meter-bar.warning {
+  background: linear-gradient(90deg, #b23a1f, #e0602a);
+  box-shadow: 0 0 16px rgba(224, 96, 42, 0.7);
+}
+
+.meter-bar.danger {
+  background: linear-gradient(90deg, var(--ribbon-red), #ff4d3d);
+  box-shadow: 0 0 18px rgba(255, 77, 61, 0.75);
+  animation: ribbonPulse 0.6s infinite alternate;
+}
+
+@keyframes ribbonPulse {
+  from {
+    box-shadow: 0 0 12px rgba(255, 77, 61, 0.55);
+  }
+
+  to {
+    box-shadow: 0 0 28px rgba(255, 77, 61, 1);
+  }
+}
+
+/* ==============================================================================
+   La hoja de papel
+   ============================================================================== */
+.editor-section {
+  flex: 1;
+  display: flex;
+  padding: 0 0.6rem;
+}
+
+.page-wrapper {
+  flex: 1;
+  position: relative;
+  background:
+    repeating-linear-gradient(var(--paper) 0px, var(--paper) 34px, var(--paper-line) 35px, var(--paper) 36px),
+    linear-gradient(var(--paper), var(--paper-edge));
+  border-radius: 0 0 4px 4px;
+  padding: 2.2rem 2.2rem 2.2rem 3.6rem;
+  min-height: 46vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 18px 30px -12px rgba(0, 0, 0, 0.55),
+    0 2px 0 var(--paper-edge);
+  transform: rotate(-0.25deg);
+  transition: transform 0.15s ease;
+}
+
+/* ==============================================================================
+   Tarjeta de Tema Sugerido al empezar (Disparador Creativo)
+   ============================================================================== */
+.topic-card {
+  position: relative;
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px dashed var(--paper-shadow);
+  border-left: 3px solid var(--brass-dark);
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.9rem;
+  max-height: 220px;
+  opacity: 1;
+  overflow: hidden;
+  transition: opacity 0.25s ease, max-height 0.3s ease, margin-bottom 0.25s ease, padding 0.25s ease;
+  z-index: 2;
+}
+
+.topic-card.hidden {
+  opacity: 0;
+  max-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+  pointer-events: none;
+}
+
+.topic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.topic-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.topic-pin {
+  font-size: 0.95rem;
+}
+
+.topic-label {
+  font-family: 'Special Elite', serif;
+  font-size: 0.8rem;
+  color: var(--ribbon-red);
+  letter-spacing: 0.02em;
+}
+
+.btn-another-topic {
+  background: transparent;
+  border: 1px solid var(--paper-shadow);
+  border-radius: 4px;
+  padding: 0.25rem 0.65rem;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.15s ease;
+}
+
+.btn-another-topic:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: var(--brass-dark);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.btn-another-topic:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-another-topic.loading .topic-btn-icon {
+  animation: spin 0.8s infinite linear;
+  display: inline-block;
+}
+
+.topic-text {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  font-style: italic;
+  margin: 0;
+}
+
+.page-wrapper.shake {
+  animation: pageShake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes pageShake {
+
+  10%,
+  90% {
+    transform: translate3d(-2px, 0, 0) rotate(-0.25deg);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(3px, 0, 0) rotate(-0.25deg);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0) rotate(-0.25deg);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0) rotate(-0.25deg);
+  }
+}
+
+.page-holes {
+  position: absolute;
+  left: 12px;
+  top: 18px;
+  bottom: 18px;
+  width: 16px;
+  background-image: radial-gradient(circle, var(--hole-shadow) 0%, var(--hole-shadow) 38%, transparent 46%);
+  background-size: 100% 46px;
+  background-repeat: repeat-y;
+  background-position: center top;
+  opacity: 0.75;
+}
+
+.page-wrapper::before {
+  content: '';
+  position: absolute;
+  left: 3.05rem;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--paper-margin);
+}
+
+.writing-textarea {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  color: var(--ink);
+  font-family: 'Courier Prime', monospace;
+  font-size: 1.05rem;
+  line-height: 36px;
+  caret-color: var(--ribbon-red);
+}
+
+.writing-textarea::placeholder {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.ai-warning-toast {
+  position: absolute;
+  bottom: 1.2rem;
+  right: 1.2rem;
+  max-width: 300px;
+  background: var(--paper);
+  border: 1px solid var(--paper-shadow);
+  border-left: 4px solid var(--ribbon-red);
+  padding: 0.7rem 1rem;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  transform: rotate(1.5deg);
+  display: none;
+}
+
+.ai-warning-toast strong {
+  color: var(--ribbon-red);
+}
+
+/* ==============================================================================
+   Fila de teclas (pie de página)
+   ============================================================================== */
+.key-row {
+  background: linear-gradient(180deg, var(--machine-light) 0%, var(--machine) 100%);
+  border: 1px solid var(--machine-shadow);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 3;
+}
+
+.progress-section {
+  flex: 1;
+  min-width: 140px;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.72rem;
+  color: var(--brass-light);
+  margin-bottom: 0.4rem;
+}
+
+.progress-track {
+  height: 8px;
+  background: var(--track);
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brass-dark), var(--brass-light));
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 0.9rem;
+}
+
+/* Teclas físicas */
+.key {
+  font-family: 'Special Elite', serif;
+  font-size: 0.85rem;
+  color: var(--paper);
+  background: radial-gradient(circle at 35% 30%, var(--key-a), var(--key-b) 75%);
+  border: 1px solid var(--machine-shadow);
+  border-radius: 50px;
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+  box-shadow:
+    0 3px 0 var(--machine-shadow),
+    0 6px 10px rgba(0, 0, 0, 0.45),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.key:hover:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 0 var(--machine-shadow),
+    0 4px 8px rgba(0, 0, 0, 0.45),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+.key:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 var(--machine-shadow), inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.key-primary {
+  background: radial-gradient(circle at 35% 30%, var(--ribbon-red-bright), var(--ribbon-red) 75%);
+  border-color: #4a1414;
+  box-shadow:
+    0 3px 0 #4a1414,
+    0 6px 10px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+.key-success {
+  background: radial-gradient(circle at 35% 30%, var(--success-light), var(--success) 75%);
+  border-color: #2c4028;
+}
+
+.key-danger {
+  background: radial-gradient(circle at 35% 30%, var(--ribbon-red-bright), var(--ribbon-red) 75%);
+  border-color: #4a1414;
+}
+
+.key:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: 0 3px 0 var(--machine-shadow) !important;
+}
+
+/* ==============================================================================
+   Modales — tarjetas tipo ficha mecanografiada
+   ============================================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 12, 8, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-card {
+  background: linear-gradient(var(--paper), var(--paper-edge));
+  border: 1px solid var(--paper-shadow);
+  border-radius: 6px;
+  max-width: 480px;
+  width: 100%;
+  padding: 2rem 2.1rem;
+  box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.modal-icon {
+  font-size: 2.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.modal-title {
+  font-family: 'Special Elite', serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.modal-desc {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-bottom: 1.5rem;
+}
+
+.modal-danger .modal-icon {
+  color: var(--ribbon-red);
+}
+
+.modal-break .modal-icon {
+  color: var(--success);
+}
+
+.modal-summary {
+  max-width: 540px;
+}
+
+.game-over-stats {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+/* Selector de niveles */
+.levels-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.level-card {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--paper-shadow);
+  border-radius: 6px;
+  padding: 0.85rem 1.1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background var(--trans), border-color var(--trans);
+}
+
+.level-card:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.level-card.selected {
+  background: rgba(124, 32, 32, 0.08);
+  border-color: var(--ribbon-red);
+}
+
+.level-card-info h3 {
+  font-family: 'Special Elite', serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+
+.level-card-info p {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+.level-badge-tag {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  border: 1px solid var(--paper-shadow);
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* Descanso Pomodoro */
+.break-timer-card {
+  background: rgba(74, 107, 69, 0.1);
+  border: 1px solid rgba(74, 107, 69, 0.35);
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin-bottom: 1.4rem;
+}
+
+.break-time {
+  font-family: 'Courier Prime', monospace;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--success);
+}
+
+/* Reporte final */
+.stars-rating {
+  font-size: 1.7rem;
+  color: var(--brass);
+  letter-spacing: 0.12em;
+  margin-bottom: 0.4rem;
+}
+
+.final-score-pill {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  margin-bottom: 1.3rem;
+}
+
+.final-score-pill strong {
+  color: var(--ink);
+  font-size: 1.2rem;
+}
+
+.metrics-table {
+  border-top: 1px solid var(--paper-shadow);
+  padding-top: 0.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  border-bottom: 1px dotted var(--paper-shadow);
+}
+
+.metric-row:last-child {
+  border-bottom: none;
+}
+
+.metric-row strong {
+  color: var(--ink);
+}
+
+/* Nota del mentor de IA, como una hoja carbón sujeta con cinta */
+.ai-review-card {
+  position: relative;
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px solid var(--paper-shadow);
+  border-radius: 3px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.2rem;
+  text-align: left;
+  transform: rotate(-0.6deg);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+.ai-review-card::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-3deg);
+  width: 70px;
+  height: 22px;
+  background: rgba(214, 194, 140, 0.75);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.ai-review-header {
+  margin-bottom: 0.5rem;
+}
+
+.ai-review-badge {
+  font-family: 'Special Elite', serif;
+  font-size: 0.78rem;
+  color: var(--ribbon-red);
+}
+
+.ai-review-text {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ==============================================================================
+   Sección de Corrección de Estilo (Qwen 2.5 3B vía /api/estilo)
+   ============================================================================== */
+.style-review-card {
+  position: relative;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--paper-shadow);
+  border-radius: 4px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  transform: rotate(0.4deg);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.style-review-card::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: 24px;
+  width: 50px;
+  height: 20px;
+  background: rgba(214, 194, 140, 0.7);
+  transform: rotate(2deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.style-review-header {
+  margin-bottom: 0.7rem;
+}
+
+.style-review-badge {
+  font-family: 'Special Elite', serif;
+  font-size: 0.82rem;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.style-review-status {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  padding: 0.4rem 0;
+}
+
+.typewriter-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--paper-shadow);
+  border-top-color: var(--brass-dark);
+  border-radius: 50%;
+  animation: spin 0.8s infinite linear;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.style-suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.style-item {
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid var(--paper-shadow);
+  border-radius: 4px;
+  padding: 0.7rem 0.85rem;
+  font-family: 'Courier Prime', monospace;
+}
+
+.style-item-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.style-badge-tag {
+  font-family: 'Special Elite', serif;
+  font-size: 0.68rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.style-badge-tag.original {
+  background: rgba(124, 32, 32, 0.12);
+  color: var(--ribbon-red);
+  border: 1px solid rgba(124, 32, 32, 0.25);
+}
+
+.style-badge-tag.suggestion {
+  background: rgba(74, 107, 69, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(74, 107, 69, 0.3);
+}
+
+.style-quote {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin: 0;
+  word-break: break-word;
+}
+
+.style-item-body {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.style-replacement {
+  font-size: 0.86rem;
+  color: var(--ink);
+  font-weight: 700;
+  margin: 0;
+  word-break: break-word;
+}
+
+.style-reason {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-top: 0.3rem;
+  margin-bottom: 0;
+  line-height: 1.4;
+  border-top: 1px dotted var(--paper-shadow);
+  padding-top: 0.3rem;
+}
+
+.style-fallback-msg {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+/* ==============================================================================
+   Accesibilidad
+   ============================================================================== */
+.key:focus-visible,
+.btn-change-level:focus-visible,
+.level-card:focus-visible {
+  outline: 2px solid var(--brass-light);
+  outline-offset: 2px;
+}
+
+.writing-textarea:focus-visible {
+  outline: 1px dashed rgba(182, 135, 59, 0.4);
+  outline-offset: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .danger-overlay.critical,
+  .page-wrapper.shake,
+  .modal-backdrop {
+    animation: none;
+  }
+}
+
+/* ==============================================================================
+   Responsive
+   ============================================================================== */
+@media (max-width: 640px) {
+  .carriage-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .carriage-center,
+  .carriage-stats {
+    justify-content: space-between;
+  }
+
+  .key-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .footer-actions {
+    justify-content: stretch;
+  }
+
+  .footer-actions .key {
+    flex: 1;
+  }
+
+  .page-wrapper {
+    padding: 1.6rem 1.4rem 1.6rem 2.6rem;
+  }
+}
+
+/* ==============================================================================
+   Temas de color (máquinas de escribir)
+   ============================================================================== */
+
+/* Verde Olivetti: verde oliva con latón */
+:root[data-theme="olivetti"] {
+  --bg-from: #2b3a33;
+  --bg-to: #17211c;
+  --machine: #1f2a25;
+  --machine-light: #2c3a33;
+  --machine-shadow: #121a16;
+  --panel-a: #26332c;
+  --panel-b: #16201b;
+  --key-a: #34443b;
+  --key-b: #121a16;
+  --track: #0c120f;
+  --brass: #c9a45c;
+  --brass-light: #ebd08f;
+  --brass-dark: #8a6a2b;
+}
+
+/* Azul tinta: pluma fuente y papel crema */
+:root[data-theme="tinta"] {
+  --bg-from: #2a3a4e;
+  --bg-to: #141d29;
+  --machine: #1c2735;
+  --machine-light: #2a384a;
+  --machine-shadow: #0f1620;
+  --panel-a: #243244;
+  --panel-b: #141d29;
+  --key-a: #33455b;
+  --key-b: #0f1620;
+  --track: #0a1018;
+  --brass: #cdb37a;
+  --brass-light: #e8d7a8;
+  --brass-dark: #85703f;
+}
+
+/* Hierro Royal: carcasa negra con cromo */
+:root[data-theme="royal"] {
+  --bg-from: #3a3a37;
+  --bg-to: #1c1c1a;
+  --machine: #1f1f1d;
+  --machine-light: #2f2f2c;
+  --machine-shadow: #111110;
+  --panel-a: #2a2a27;
+  --panel-b: #171715;
+  --key-a: #3b3b37;
+  --key-b: #141412;
+  --track: #0d0d0c;
+  --brass: #a8a597;
+  --brass-light: #d6d2c4;
+  --brass-dark: #6e6b5f;
+}
+
+/* Vino burdeos: forro de libro antiguo */
+:root[data-theme="burdeos"] {
+  --bg-from: #4b232b;
+  --bg-to: #260f14;
+  --machine: #2b1519;
+  --machine-light: #3d2025;
+  --machine-shadow: #180a0d;
+  --panel-a: #351a1f;
+  --panel-b: #1f0e11;
+  --key-a: #47262c;
+  --key-b: #170a0d;
+  --track: #120708;
+  --brass: #b8955a;
+  --brass-light: #dcc088;
+  --brass-dark: #7a5f30;
+}
+
+/* Escritorio claro: máquina oscura sobre madera clara y papel más luminoso */
+:root[data-theme="escritorio"] {
+  --bg-from: #d6ccb4;
+  --bg-to: #b9ae94;
+  --paper: #f3ead2;
+  --paper-edge: #e2d6b3;
+  --machine: #2a2824;
+  --machine-light: #3a3731;
+  --machine-shadow: #171613;
+  --panel-a: #2f2c27;
+  --panel-b: #1c1a16;
+  --key-a: #3d3a33;
+  --key-b: #171612;
+  --track: #100e0b;
+}
+
+/* Café clásico: la máquina original, ahora con bloque propio */
+:root[data-theme="cafe"] {
+  --bg-from: #3a2c1f;
+  --bg-to: #241a10;
+  --machine: #221f1b;
+  --machine-light: #322d26;
+  --machine-shadow: #16130f;
+  --panel-a: #2c2822;
+  --panel-b: #1a1712;
+  --key-a: #3a352c;
+  --key-b: #17140f;
+  --track: #100e0b;
+  --brass: #b6873b;
+  --brass-light: #e0be7c;
+  --brass-dark: #7d5a26;
+}
+
+/* Botón de cambio de tema */
+.theme-knob {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(180deg, var(--panel-a), var(--panel-b));
+  border: 1px solid var(--brass-dark);
+  border-radius: 10px;
+  padding: 0.4rem 0.8rem;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.78rem;
+  color: var(--paper);
+  cursor: pointer;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: transform var(--trans);
+}
+
+.theme-knob:hover {
+  transform: translateY(1px);
+}
+
+.theme-knob:focus-visible {
+  outline: 2px solid var(--brass-light);
+  outline-offset: 2px;
+}
+
+.theme-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg-from);
+  border: 2px solid var(--brass-light);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}

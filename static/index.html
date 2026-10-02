@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escribe si puedes — Entrenamiento de Escritura Continua y Pomodoro</title>
+  <meta name="description"
+    content="Aplicación web gamificada que entrena la fluidez y continuidad de redacción combinando la técnica Pomodoro, inteligencia artificial antifraude y borrado punitivo por inactividad.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Work+Sans:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Capa de Alerta y Peligro de Inactividad -->
+  <div id="dangerOverlay" class="danger-overlay" aria-hidden="true"></div>
+
+  <!-- Contenedor Principal de la Aplicación -->
+  <div class="app-container">
+
+    <!-- Barra superior: la "carro" de la máquina -->
+    <header class="carriage-bar">
+      <div class="machine-brand">
+        <span class="brand-mark">¶</span>
+        <div>
+          <h1 class="brand-title">Escribe si puedes</h1>
+          <span class="brand-subtitle">Pomodoro sin pausas</span>
+        </div>
+      </div>
+
+      <div class="carriage-center">
+        <!-- Cronómetro Pomodoro -->
+        <div class="pomodoro-card" id="pomodoroCard">
+          <span class="pomo-label" id="pomoPhaseLabel">Fase de escritura activa</span>
+          <span class="pomo-timer" id="pomoTimer">05:00</span>
+        </div>
+
+        <!-- Indicador de Nivel -->
+        <div class="level-pill" id="levelBadgeBtn">
+          <span class="level-dot"></span>
+          <span id="levelNameDisplay">Nivel 1: Calentamiento</span>
+          <button class="btn-change-level" id="btnOpenLevelModal" title="Cambiar dificultad"
+            aria-label="Cambiar dificultad">&#9881;</button>
+        </div>
+        <!-- Selector de tema (color de la máquina) -->
+        <button class="theme-knob" id="btnTema" title="Cambiar color de la máquina" aria-label="Cambiar tema de color">
+          <span class="theme-swatch"></span>
+          <span id="themeNameDisplay">Verde Olivetti</span>
+        </button>
+      </div>
+
+      <div class="carriage-stats">
+        <div class="stat-box">
+          <span class="stat-number" id="wpmCounter">0</span>
+          <span class="stat-label">palabras / min</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="wordsCounter">0 / 75</span>
+          <span class="stat-label">palabras válidas</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Medidor de cinta: cuánta tolerancia de inactividad queda -->
+    <div class="ribbon-gauge" id="ribbonGauge">
+      <div class="ribbon-info">
+        <span class="ribbon-title">Cinta restante antes del borrado: <strong
+            id="secondsLeftDisplay">7.5s</strong></span>
+        <span class="ai-badge ai-ok" id="aiStatusBadge">Coherencia verificada</span>
+      </div>
+      <div class="meter-track">
+        <div class="meter-bar" id="inactivityBar" style="width: 100%;"></div>
+      </div>
+    </div>
+
+    <!-- Lienzo Central de Escritura: la hoja de papel -->
+    <main class="editor-section">
+      <div class="page-wrapper" id="editorWrapper">
+        <div class="page-holes" aria-hidden="true"></div>
+
+        <!-- Tarjeta de Tema Sugerido al empezar (no bloquea, desaparece al escribir) -->
+        <div class="topic-card" id="topicCard">
+          <div class="topic-header">
+            <div class="topic-title-group">
+              <span class="topic-pin">📌</span>
+              <span class="topic-label">Idea para arrancar:</span>
+            </div>
+            <button class="btn-another-topic" id="btnOtroTema" title="Proponer otra idea"
+              aria-label="Proponer otra idea">
+              <span class="topic-btn-icon">&#8635;</span> Otro tema
+            </button>
+          </div>
+          <p class="topic-text" id="topicText">Cargando idea sugerida...</p>
+        </div>
+
+        <textarea id="writingArea" class="writing-textarea"
+          placeholder="Empieza a teclear. La única regla es no detenerte: si la cinta llega a cero, la hoja se arranca."
+          autofocus spellcheck="false"></textarea>
+
+        <!-- Notificación flotante de advertencia de IA -->
+        <div class="ai-warning-toast" id="aiWarningToast">
+          <strong>Tecleo sin sentido detectado.</strong> Las palabras repetitivas o no lingüísticas no cuentan para el
+          avance.
+        </div>
+      </div>
+    </main>
+
+    <!-- Barra Inferior de Controles y Progreso hacia la Meta -->
+    <footer class="key-row">
+      <div class="progress-section">
+        <div class="progress-labels">
+          <span>Progreso del nivel</span>
+          <span id="goalPercentage">0% completado</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="goalProgressBar" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <div class="footer-actions">
+        <button class="key key-secondary" id="btnFinalizarSesion">Finalizar y calificar</button>
+        <button class="key key-primary" id="btnDescargarTexto" disabled>Descargar redacción (.txt)</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODALES DE CONTROL Y GAMIFICACIÓN -->
+  <!-- ========================================================================= -->
+
+  <!-- Modal: Selector de Nivel -->
+  <div class="modal-backdrop" id="modalNivel" style="display: none;">
+    <div class="modal-card">
+      <h2 class="modal-title">Elige tu nivel</h2>
+      <p class="modal-desc">Cada nivel ajusta cuánto dura la cinta antes del borrado por inactividad y la meta de
+        palabras del ciclo Pomodoro.</p>
+
+      <div class="levels-grid" id="levelsGridContainer">
+        <!-- Renderizado dinámicamente desde la API -->
+      </div>
+
+      <div class="modal-actions">
+        <button class="key key-primary" id="btnCloseLevelModal">Empezar este nivel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Penalización por Inactividad (Game Over) -->
+  <div class="modal-backdrop" id="modalGameOver" style="display: none;">
+    <div class="modal-card modal-danger">
+      <div class="modal-icon">&#10008;</div>
+      <h2 class="modal-title">Se acabó la cinta</h2>
+      <p class="modal-desc">Te detuviste demasiado tiempo y la hoja se arrancó.</p>
+
+      <div class="game-over-stats">
+        <p>No pasa nada. La fluidez se entrena aceptando los errores y escribiendo sin juzgar el primer borrador.</p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="key key-danger" id="btnReiniciarNivel">Intentar de nuevo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Descanso Pomodoro Seguro -->
+  <div class="modal-backdrop" id="modalDescanso" style="display: none;">
+    <div class="modal-card modal-break">
+      <div class="modal-icon">&#9749;</div>
+      <h2 class="modal-title">Bloque completado</h2>
+      <p class="modal-desc">El borrado por inactividad está en pausa mientras descansas.</p>
+
+      <div class="break-timer-card">
+        <div class="break-time" id="breakTimerDisplay">02:00</div>
+        <span>Un momento para tus ojos y tus muñecas</span>
+      </div>
+
+      <div class="modal-actions">
+        <button class="key key-success" id="btnContinuarSiguienteCiclo">Seguir escribiendo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Boleta de Calificación Final -->
+  <div class="modal-backdrop" id="modalCalificacion" style="display: none;">
+    <div class="modal-card modal-summary">
+      <div class="modal-icon">&#9998;</div>
+      <h2 class="modal-title">Reporte de la sesión</h2>
+      <p class="modal-desc" id="summaryRank">Maestro de la fluidez</p>
+
+      <div class="stars-rating" id="starsDisplay">★★★★★</div>
+      <div class="final-score-pill">Puntuación final: <strong id="finalScoreVal">95 / 100</strong></div>
+
+      <div class="metrics-table">
+        <div class="metric-row">
+          <span>Velocidad neta</span>
+          <strong id="finalWpm">48.5 WPM</strong>
+        </div>
+        <div class="metric-row">
+          <span>Palabras válidas</span>
+          <strong id="finalValidWords">162 palabras</strong>
+        </div>
+        <div class="metric-row">
+          <span>Palabras descartadas</span>
+          <strong id="finalGarbageWords">0 palabras</strong>
+        </div>
+        <div class="metric-row">
+          <span>Pausas críticas evitadas</span>
+          <strong id="finalCloseCalls">2 veces al borde</strong>
+        </div>
+        <div class="metric-row">
+          <span>Tiempo de concentración</span>
+          <strong id="finalTimeSpent">5m 20s</strong>
+        </div>
+      </div>
+
+      <!-- Reseña Literaria con IA Local (Qwen 2.5 3B vía Ollama) -->
+      <div class="ai-review-card" id="aiReviewCard">
+        <div class="ai-review-header">
+          <span class="ai-review-badge">Mentor IA · Qwen 2.5 3B</span>
+        </div>
+        <p class="ai-review-text" id="aiReviewText">Generando crítica literaria y retroalimentación estilística...</p>
+      </div>
+
+      <!-- Sección de Corrección de Estilo (Qwen 2.5 3B vía /api/estilo) -->
+      <div class="style-review-card" id="styleReviewCard">
+        <div class="style-review-header">
+          <span class="style-review-badge">✏️ Corrección de estilo</span>
+        </div>
+        <div class="style-review-status" id="styleReviewStatus">
+          <span class="typewriter-spinner"></span> Revisando estilo…
+        </div>
+        <div class="style-suggestions-list" id="styleSuggestionsList" style="display: none;"></div>
+        <p class="style-fallback-msg" id="styleFallbackMsg" style="display: none;"></p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="key key-secondary" id="btnCerrarReporte">Cerrar</button>
+        <button class="key key-primary" id="btnDescargarDesdeReporte">Descargar texto (.txt)</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
