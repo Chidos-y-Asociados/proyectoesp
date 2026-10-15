@@ -15,9 +15,13 @@ import re
 from typing import NamedTuple
 from flask import Flask, request, jsonify, send_from_directory
 
-# Inicialización de la aplicación Flask sirviendo estáticos desde 'static'
-STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
-app = Flask(__name__, static_folder=STATIC_DIR, static_url_path='')
+# Inicialización de la aplicación Flask sirviendo la interfaz web desde la carpeta 'Frontend'
+FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Frontend'))
+if not os.path.exists(FRONTEND_DIR):
+    # Fallback si se ejecuta en una estructura alternativa
+    FRONTEND_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Frontend')
+
+app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
 
 # ==============================================================================
 # 🧩 MODELOS INMUTABLES Y CONFIGURACIONES (NamedTuple & frozenset)
@@ -631,8 +635,8 @@ def agregar_cabeceras_cors(response):
 
 @app.route('/')
 def index():
-    """Sirve la interfaz web principal."""
-    return send_from_directory(STATIC_DIR, 'index.html')
+    """Sirve la interfaz web principal desde la carpeta Frontend."""
+    return send_from_directory(FRONTEND_DIR, 'index.html')
 
 
 @app.route('/api/niveles', methods=['GET'])

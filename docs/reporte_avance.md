@@ -4,8 +4,8 @@
 > **Carrera:** Ingeniería en Computación Inteligente — Universidad de Colima  
 > **Semestre:** 3º Semestre — Grupo B (Agosto 2026 - Enero 2027)  
 > **Estudiantes del Equipo:** Diego Guadalupe Torres Bravo y Christopher Emmanuel Jimenez Cuevas  
-> **Archivo de Control y Estudio:** [`proyectopf/reporte_avance.md`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/reporte_avance.md)  
-> **Archivos del Sistema:** [`proyectopf/app.py`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/app.py), [`proyectopf/static/index.html`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/static/index.html), [`proyectopf/static/app.js`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/static/app.js), [`proyectopf/static/style.css`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/static/style.css)  
+> **Archivo de Control y Estudio:** [`proyectopf/docs/reporte_avance.md`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/docs/reporte_avance.md)  
+> **Archivos del Sistema:** [`proyectopf/Backend/app.py`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Backend/app.py), [`proyectopf/Frontend/index.html`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Frontend/index.html), [`proyectopf/Frontend/app.js`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Frontend/app.js), [`proyectopf/Frontend/style.css`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Frontend/style.css), [`proyectopf/docs/README.md`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/docs/README.md)  
 > **Propósito Pedagógico:** Explicar exhaustivamente la arquitectura, diseño sensorial, lógica funcional, fragmentos clave de código en cada lenguaje (Python, JavaScript, HTML, CSS), su funcionamiento interno y el flujo de comunicación fullstack entre cliente y servidor.
 
 ---
@@ -91,7 +91,7 @@ sequenceDiagram
 
 ---
 
-## 🐍 3. Backend: Python Flask y Programación Funcional ([`app.py`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/app.py))
+## 🐍 3. Backend: Python Flask y Programación Funcional ([`Backend/app.py`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Backend/app.py))
 
 ### A. Modelado Inmutable (`NamedTuple`, `frozenset` y `tuple`)
 
@@ -213,7 +213,7 @@ def filtrar_sugerencias_estilo_validas(
 
 ---
 
-## ⚡ 4. Frontend: Vanilla JavaScript ([`static/app.js`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/static/app.js))
+## ⚡ 4. Frontend: Vanilla JavaScript ([`Frontend/app.js`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Frontend/app.js))
 
 ### A. Gestión de Temas Sugeridos
 
@@ -278,7 +278,7 @@ async function mostrarReporteCalificacion() {
 
 ---
 
-## 🎨 5. Frontend: Estructura y Estilos ([`index.html`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/static/index.html) y [`style.css`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/static/style.css))
+## 🎨 5. Frontend: Estructura y Estilos ([`Frontend/index.html`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Frontend/index.html) y [`Frontend/style.css`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Frontend/style.css))
 
 - **Tarjeta de Tema (`.topic-card`):** Colocada en la cabecera de la hoja pautada con borde discontinuo `1px dashed var(--paper-shadow)`, acento de latón `var(--brass-dark)` y botón físico `.btn-another-topic`. Transición suave de colapso con `.hidden`.
 - **Corrección de Estilo (`.style-review-card`):** Tarjeta con efecto de nota adhesiva mecanografiada, spinner animado `.typewriter-spinner` y badges `.style-badge-tag.original` y `.style-badge-tag.suggestion`.
@@ -290,11 +290,12 @@ async function mostrarReporteCalificacion() {
 
 | Archivo | Lenguaje | Rol en la Arquitectura | Conceptos Técnicos y Funcionales Aplicados |
 | :--- | :---: | :--- | :--- |
-| [`proyectopf/app.py`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/app.py) | **Python 3.10+** | API REST, Motor Antifraude, Temas y Estilo | Inmutabilidad (`NamedTuple`, `frozenset`, `tuple`), funciones puras de filtrado anti-alucinaciones, catálogo de 18 temas predefinidos, *Pattern Matching* (`match...case`), integración HTTP con Ollama local (`qwen2.5:3b`), CORS manual. |
-| [`static/index.html`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/static/index.html) | **HTML5** | Estructura Semántica del Lienzo | Tarjeta `#topicCard` en el lienzo de escritura, sección `#styleReviewCard` con spinner y lista de correcciones en el modal de calificación. |
-| [`static/style.css`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/static/style.css) | **CSS3** | Estética Vintage y Respuesta Visual | Variables temáticas para los 6 esquemas de color, animación `.topic-card.hidden`, spinner de máquina `@keyframes spin`, badges semánticos para citas originales y sugerencias. |
-| [`static/app.js`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/static/app.js) | **JavaScript ES6+** | Controlador de Estados y Sincronización | Estado global reactivo (`AppState`), consumo asíncrono no bloqueante de `/api/tema` y `/api/estilo`, escape seguro de HTML y ocultamiento reactivo de sugerencias al teclear. |
-| [`reporte_avance.md`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/reporte_avance.md) | **Markdown** | Documentación de Aprendizaje y Estudio | Guía técnica completa, diagramas Mermaid actualizados y análisis conceptual para Diego y Christopher. |
+| [`proyectopf/Backend/app.py`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Backend/app.py) | **Python 3.10+** | API REST, Motor Antifraude, Temas y Estilo | Inmutabilidad (`NamedTuple`, `frozenset`, `tuple`), funciones puras de filtrado anti-alucinaciones, catálogo de 18 temas predefinidos, *Pattern Matching* (`match...case`), integración HTTP con Ollama local (`qwen2.5:3b`), CORS manual. |
+| [`proyectopf/Frontend/index.html`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Frontend/index.html) | **HTML5** | Estructura Semántica del Lienzo | Tarjeta `#topicCard` en el lienzo de escritura, sección `#styleReviewCard` con spinner y lista de correcciones en el modal de calificación. |
+| [`proyectopf/Frontend/style.css`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Frontend/style.css) | **CSS3** | Estética Vintage y Respuesta Visual | Variables temáticas para los 6 esquemas de color, animación `.topic-card.hidden`, spinner de máquina `@keyframes spin`, badges semánticos para citas originales y sugerencias. |
+| [`proyectopf/Frontend/app.js`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/Frontend/app.js) | **JavaScript ES6+** | Controlador de Estados y Sincronización | Estado global reactivo (`AppState`), consumo asíncrono no bloqueante de `/api/tema` y `/api/estilo`, escape seguro de HTML y ocultamiento reactivo de sugerencias al teclear. |
+| [`proyectopf/docs/README.md`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/docs/README.md) | **Markdown** | Especificación y Requerimientos de Proyecto | Definición de problema, usuarios objetivo, dinámicas Pomodoro, niveles y reglas del juego. |
+| [`proyectopf/docs/reporte_avance.md`](file:///c:/Users/diego/Desktop/Facultad%20ICI/Tercer%20Semestre/Programaci%C3%B3n%20Funcional/Proyecto/proyectopf/docs/reporte_avance.md) | **Markdown** | Documentación de Aprendizaje y Estudio | Guía técnica completa, diagramas Mermaid actualizados y análisis conceptual para Diego y Christopher. |
 
 ---
 
